@@ -35,7 +35,7 @@ npm test
 npm run build
 ```
 
-The default build creates `vercel-public/` for Vercel. The `api/` functions store account-specific wishes and private images in Supabase. See [DEPLOYMENT.md](DEPLOYMENT.md) for the migration, environment variables, and email sign-in setup. Use export/import to transfer existing local wishes into your signed-in cloud account. An optional legacy Worker build remains available through `npm run build:worker`.
+The default build creates `vercel-public/` for Vercel. The `api/` functions store wishes and images in Supabase for both "His wishlist" and "Her wishlist" without requiring email login. See [DEPLOYMENT.md](DEPLOYMENT.md) for the migration and environment variables. Use export/import in Settings to transfer existing local wishes into the cloud database. An optional legacy Worker build remains available through `npm run build:worker`.
 
 Vercel/Supabase deployment is prepared but not yet live: project creation needs a database password entered by the owner, and the command environment cannot currently resolve GitHub for the initial push. Chrome desktop visual verification was completed for both accents, item details, and appearance controls after correcting the mixed light/dark appearance. Automated checks cover the data model and local server API.
 

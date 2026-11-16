@@ -29,7 +29,7 @@ if errorlevel 1 goto failed
 git diff --cached --quiet
 if errorlevel 2 goto failed
 if errorlevel 1 (
-  git commit -m "Build Wishfully with Vercel and private Supabase storage"
+  git commit -m "Disable email login and switch to shared wishlists for 1 male and 1 female"
   if errorlevel 1 goto failed
 )
 :sync_history

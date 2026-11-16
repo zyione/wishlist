@@ -1,25 +1,39 @@
--- Dedicated Wishfully data only. Other projects and tables are not changed.
+-- Wishfully shared wishlist migration (1 male + 1 female lists)
+-- Disables email login requirements; allows shared cloud state across devices
 begin;
-create table if not exists public.wishfully_accounts (
- user_id uuid primary key references auth.users(id) on delete cascade,
+
+create table if not exists public.wishfully_state (
+ id integer primary key default 1 check (id = 1),
  payload jsonb not null,
  revision bigint not null default 0 check (revision >= 0)
 );
-alter table public.wishfully_accounts enable row level security;
-grant select, insert, update on public.wishfully_accounts to authenticated;
-revoke all on public.wishfully_accounts from anon;
-create policy "Wishfully read own lists" on public.wishfully_accounts
- for select to authenticated using ((select auth.uid()) = user_id);
-create policy "Wishfully create own lists" on public.wishfully_accounts
- for insert to authenticated with check ((select auth.uid()) = user_id);
-create policy "Wishfully update own lists" on public.wishfully_accounts
- for update to authenticated using ((select auth.uid()) = user_id)
- with check ((select auth.uid()) = user_id);
-insert into storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
- values ('wishfully-images','wishfully-images',false,2097152,array['image/webp'])
- on conflict (id) do nothing;
-create policy "Wishfully read own images" on storage.objects
- for select to authenticated using (bucket_id='wishfully-images' and (storage.foldername(name))[1]=(select auth.uid())::text);
-create policy "Wishfully upload own images" on storage.objects
- for insert to authenticated with check (bucket_id='wishfully-images' and (storage.foldername(name))[1]=(select auth.uid())::text);
+
+alter table public.wishfully_state enable row level security;
+grant all on public.wishfully_state to anon, authenticated, service_role;
+
+drop policy if exists "Allow shared wishfully_state read" on public.wishfully_state;
+create policy "Allow shared wishfully_state read" on public.wishfully_state
+ for select to public using (true);
+
+drop policy if exists "Allow shared wishfully_state insert" on public.wishfully_state;
+create policy "Allow shared wishfully_state insert" on public.wishfully_state
+ for insert to public with check (true);
+
+drop policy if exists "Allow shared wishfully_state update" on public.wishfully_state;
+create policy "Allow shared wishfully_state update" on public.wishfully_state
+ for update to public using (true) with check (true);
+
+-- Storage bucket for shared images
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+ values ('wishfully-images', 'wishfully-images', true, 2097152, array['image/webp'])
+ on conflict (id) do update set public = true;
+
+drop policy if exists "Allow shared wishfully-images read" on storage.objects;
+create policy "Allow shared wishfully-images read" on storage.objects
+ for select to public using (bucket_id = 'wishfully-images');
+
+drop policy if exists "Allow shared wishfully-images insert" on storage.objects;
+create policy "Allow shared wishfully-images insert" on storage.objects
+ for insert to public with check (bucket_id = 'wishfully-images');
+
 commit;
