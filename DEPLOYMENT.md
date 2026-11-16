@@ -18,7 +18,7 @@ From the project's API settings, obtain the project URL and public publishable k
 
 Push this project to `zyione/wishlist`. The ignored `data/`, `.qa/`, `.env*` (except `.env.example`), `.git/`, and generated build folders must not be uploaded. The unrelated `.openai/` hosting identity is excluded from the Vercel upload package.
 
-In this local environment, both Git index writes and terminal network access were denied despite the app's Full access setting. You can double-click `Publish-GitHub.cmd` in the project folder to make the initial commit and push using your own normal Git environment. It uploads only the listed source paths and never force-pushes. If the remote already has a conflicting history, it stops and reports the error instead of overwriting it.
+In this local environment, both Git index writes and terminal network access were denied despite the app's Full access setting. You can double-click `Publish-GitHub.cmd` in the project folder to commit and push using your own normal Git environment. It uploads only the listed source paths and never force-pushes. It first fetches and merges the remote `main` history, including an independently initialized repository. If that merge has conflicts, it stops and prints the affected filenames rather than choosing one side automatically. Send that output to ChatGPT for resolution, then run the launcher again after the merge has been completed.
 
 ## 3. Vercel
 

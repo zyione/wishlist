@@ -7,6 +7,8 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
+git rev-parse -q --verify MERGE_HEAD >nul 2>nul
+if not errorlevel 1 goto merge_pending
 set "WISH_REMOTE="
 for /f "delims=" %%R in ('git remote get-url origin 2^>nul') do set "WISH_REMOTE=%%R"
 if defined WISH_REMOTE (
@@ -30,6 +32,13 @@ if errorlevel 1 (
   git commit -m "Build Wishfully with Vercel and private Supabase storage"
   if errorlevel 1 goto failed
 )
+echo.
+echo Fetching the existing GitHub history...
+git fetch origin main
+if errorlevel 1 goto failed
+echo Merging the GitHub history without replacing either side...
+git merge --no-edit --allow-unrelated-histories origin/main
+if errorlevel 1 goto merge_pending
 git push --set-upstream origin main
 if errorlevel 1 goto failed
 echo.
@@ -37,6 +46,15 @@ echo Wishfully source was pushed to https://github.com/zyione/wishlist
 echo Return to ChatGPT to finish the Supabase and Vercel setup.
 pause
 exit /b 0
+:merge_pending
+echo.
+echo The merge needs attention. No force push was attempted.
+echo Files that need conflict resolution:
+git diff --name-only --diff-filter=U
+echo.
+echo Copy this output to ChatGPT. Your files and both histories are preserved.
+pause
+exit /b 1
 :failed
 echo.
 echo Publishing did not finish. No force push was attempted.
