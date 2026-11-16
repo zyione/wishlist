@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f5f7"><meta name="description" content="A thoughtful home for the things you love. Two personal wishlists, your own sections, and every shop link in one place.">
+  <title>Wishfully — Good things, saved.</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body data-theme="blue">
+  <a class="skip" href="#main">Skip to wishes</a>
+  <header class="topbar"><div class="nav-inner">
+    <a class="brand" href="/" aria-label="Wishfully home"><span id="brand-icon"></span>Wishfully<span class="brand-dot">.</span></a>
+    <nav class="list-switch" aria-label="Wishlists" id="list-switch"></nav>
+    <div class="nav-end"><span id="save-status" class="save-status" role="status">Saved</span><button class="icon-button" id="settings-button" aria-label="Wishlist settings"></button></div>
+  </div></header>
+  <main id="main" class="main">
+    <section class="intro"><div><div class="eyebrow"><span class="tiny-spark">✧</span> A LITTLE INSPIRATION</div><h1 id="list-name">His wishlist</h1><p id="list-description">Good things, saved for someday.</p></div><div class="intro-actions"><button class="button secondary" id="edit-list"></button><button class="button primary" id="add-wish"></button></div></section>
+    <div class="toolbar"><label class="search"><span id="search-icon"></span><input id="search" type="search" placeholder="Find something lovely…" aria-label="Search wishes"></label><button id="add-section" class="button quiet"></button><div class="toolbar-spacer"></div><label class="select-wrap"><span class="sr-only">Filter wishes</span><select id="filter"><option value="all">All wishes</option><option value="favorite">Favorites</option><option value="wanted">Still wishing</option><option value="obtained">Obtained</option></select></label><label class="select-wrap"><span class="sr-only">Sort wishes</span><select id="sort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="name">Name: A–Z</option><option value="price">Price: low to high</option></select></label></div>
+    <div class="list-meta"><span id="wish-count"></span><span id="list-note">A collection of possibilities.</span></div>
+    <div id="content" aria-live="polite"><div class="loading">Opening your wishlist…</div></div>
+    <footer><span>Little wishes. Good things.</span><span class="footer-brand">Made room for what you love <span>♡</span></span></footer>
+  </main>
+  <dialog id="modal" aria-labelledby="modal-title"><div id="modal-content"></div></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <input type="file" id="import-file" accept="application/json,.json" hidden>
+</body></html>

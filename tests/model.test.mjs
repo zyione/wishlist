@@ -1,0 +1,9 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {initialState,validateState,safeUrl,lowestPrice} from '../public/model.js';
+test('starter lists and links are valid and independent',()=>{const s=initialState();assert.equal(validateState(s),true);assert.equal(s.lists.length,2);assert.ok(s.wishes.some(w=>w.links.length===3));assert.ok(s.wishes.some(w=>w.listId==='his'));assert.ok(s.wishes.some(w=>w.listId==='her'));});
+test('sections are optional and removing them can preserve every wish',()=>{const s=initialState();const count=s.wishes.length;s.sections=[];s.wishes.forEach(w=>w.sectionId=null);assert.equal(validateState(s),true);assert.equal(s.wishes.length,count);});
+test('cross-list section references are rejected',()=>{const s=initialState();s.wishes[0].sectionId='her-main';assert.throws(()=>validateState(s),/same wishlist/);});
+test('unsafe links and malformed prices are rejected',()=>{for(const url of ['javascript:alert(1)','data:text/html,bad','https://user:password@example.com']){const s=initialState();s.wishes[0].links[0].url=url;assert.throws(()=>validateState(s));assert.equal(safeUrl(url),false);}for(const price of [-1,NaN,Infinity,'15']){const s=initialState();s.wishes[0].links[0].price=price;assert.throws(()=>validateState(s));}});
+test('zero is a valid price; missing prices do not become zero',()=>{assert.equal(lowestPrice({links:[{price:null},{price:550}]}),550);assert.equal(lowestPrice({links:[{price:0},{price:100}]}),0);assert.equal(lowestPrice({links:[{price:null}]}),null);});
+test('backups reject duplicate identifiers and orphaned items',()=>{let s=initialState();s.wishes[1].id=s.wishes[0].id;assert.throws(()=>validateState(s),/duplicate/);s=initialState();s.wishes[0].listId='missing';assert.throws(()=>validateState(s));});

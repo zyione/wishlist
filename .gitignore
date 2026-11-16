@@ -1,0 +1,13 @@
+node_modules/
+data/
+dist/
+.qa/
+vercel-public/
+.vercel/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+
+.openai/

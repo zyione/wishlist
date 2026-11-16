@@ -1,0 +1,5 @@
+CREATE TABLE wishfully_state (
+ id INTEGER PRIMARY KEY CHECK (id = 1),
+ payload TEXT NOT NULL,
+ revision INTEGER NOT NULL DEFAULT 0
+);
